@@ -11,7 +11,7 @@ async function createFile(filename, content) {
 
   if (error) {
     console.log(
-      chalk.red(`please specify parameter ${result.error.details[0].path[0]}`)
+      chalk.red(`please specify parameter ${error.details[0].path[0]}`)
     );
     return;
   }
@@ -24,6 +24,18 @@ async function createFile(filename, content) {
         `sorry application doesn't support files with ${extension} extention`
       )
     );
+    return;
+  }
+
+  try {
+    await fs.writeFile(
+      path.join(__dirname, "./files", filename),
+      content,
+      "utf-8"
+    );
+    console.log(chalk.blue("File was created succesfully!"));
+  } catch (error) {
+    console.log(error.message);
   }
 }
 
