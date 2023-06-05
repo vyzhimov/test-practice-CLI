@@ -39,6 +39,50 @@ async function createFile(filename, content) {
   }
 }
 
+async function getFiles() {
+  try {
+    const result = await fs.readdir(path.join(__dirname, "./files"));
+    if (result.length === 0) {
+      console.log(chalk.red("no files in directory"));
+      return;
+    } else {
+      return result;
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+async function getInfo(filename) {
+  const folder = await fs.readdir(path.join(__dirname, "./files"));
+  const result = folder.includes(filename);
+  if (!result) {
+    console.log(chalk.red(`No file with ${filename} found`));
+    return;
+  }
+  const info = await fs.readFile(
+    path.join(__dirname, "./files", filename),
+    "utf-8"
+  );
+
+  const extension = path.extname(path.join(__dirname, "./files", filename));
+  const name = path.basename(
+    path.join(__dirname, "./files", filename),
+    extension
+  );
+
+  const stat = await fs.stat(path.join(__dirname, "./files", filename));
+
+  console.log({
+    name,
+    extension: extension.slice(1),
+    content: info,
+    dateOfCreate: stat.birthtime.toString(),
+  });
+}
+
 module.exports = {
   createFile,
+  getFiles,
+  getInfo,
 };
